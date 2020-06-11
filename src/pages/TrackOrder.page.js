@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigation } from "./include/Navigation.page";
+import Navigation from "./include/Navigation.page";
 import { Footer } from "./include/Footer.page";
 import { AddressModal } from "./include/AddressModal.page";
 import { Helmet } from "react-helmet";

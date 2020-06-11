@@ -4,9 +4,11 @@ export const getProductDetails = () => {
 };
 
 // GETTING ALL THE PRODUCTS
-export const productsList = async () => {
+export const productsList = async (filteredData) => {
   const apiUrl = global.config.apiBaseURL.url;
   const companyID = global.config.apiBaseURL.companyId;
+
+  console.log("FilterData --", filteredData);
 
   return await fetch(apiUrl + "/Product/GetProducts", {
     method: "POST",
@@ -15,14 +17,14 @@ export const productsList = async () => {
     },
     body: JSON.stringify({
       companyId: companyID,
-      pageNumber: 1,
-      rowsPage: 5,
-      categories: "",
-      subcategories: "",
-      productName: "",
-      priceMin: 0,
-      priceMax: 0,
-      isGroup: 0,
+      pageNumber: filteredData.pageNumber,
+      rowsPage: filteredData.rowsPage,
+      categories: filteredData.categories,
+      subcategories: filteredData.subcategories,
+      productName: filteredData.productName,
+      priceMin: filteredData.priceMin,
+      priceMax: filteredData.priceMax,
+      isGroup: filteredData.isGroup,
     }),
   })
     .then((response) => response.json())

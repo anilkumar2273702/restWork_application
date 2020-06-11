@@ -12,11 +12,11 @@ class ProductsFillterPage extends React.Component {
   }
 
   componentDidMount() {
-    console.log("Hello ");
+    // USING METHOD TO GET ALL CATEGORIES
     this.fetchAllCategoryList();
   }
 
-  // USING METHOD TO GET ALL PRODCUTS
+  // USING METHOD TO GET ALL CATEGORIES
   fetchAllCategoryList = async () => {
     productCategoryList().then(
       (response) => {
@@ -47,7 +47,10 @@ class ProductsFillterPage extends React.Component {
                     type="checkbox"
                     className="custom-control-input"
                     id={"category_" + index}
+                    name="selected_categories"
                     value={items.categoryId}
+                    onChange={this.props.handleOnChange}
+                    // checked
                   />
                   <label
                     className="custom-control-label"
@@ -59,6 +62,7 @@ class ProductsFillterPage extends React.Component {
               );
             })}
           </div>
+          
           <div className="filter-sections">
             <h3>Ordenar por precio</h3>
             <div className="range-slider">
@@ -142,6 +146,7 @@ class ProductsFillterPage extends React.Component {
               </label>
             </div>
           </div>
+        
         </div>
       </div>
     );

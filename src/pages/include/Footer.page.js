@@ -1,6 +1,13 @@
 import React from "react";
 
 export const Footer = (props) => {
+  const gloablFooterLinks = global.config.footerLinks;
+  const firstSection = gloablFooterLinks[0].first_section;
+  const secondSection = gloablFooterLinks[0].second_section;
+  const thirdSection = gloablFooterLinks[0].third_section;
+  const fourthSection = gloablFooterLinks[0].fourth_section;
+  const fifthSection = gloablFooterLinks[0].fifth_section;
+  const sixthSection = gloablFooterLinks[0].sixth_section;
   return (
     <footer className="footer-section">
       <div className="footer-main">
@@ -14,9 +21,9 @@ export const Footer = (props) => {
                   }
                   alt=""
                 />
-                <p className="address-info">Av.La Marina, #239 Restwork</p>
-                <p className="phone-text">Teléfono: 958654784</p>
-                <p className="email-text">clientes@restwork.com</p>
+                <p className="address-info">{firstSection[0].address}</p>
+                <p className="phone-text">{firstSection[1].number}</p>
+                <p className="email-text">{firstSection[2].email}</p>
               </div>
             </div>
             <div className="col-sm-2">
@@ -26,17 +33,29 @@ export const Footer = (props) => {
                   <a
                     title="About Us"
                     onClick={() => {
-                      props.props.history.push("/about_us");
+                      props.props.history.push(secondSection[0].link);
                     }}
                   >
-                    Sobre nosotros
+                    {secondSection[0].label}
                   </a>
                 </li>
                 <li>
-                  <a href="#">Buscar comida</a>
+                  <a
+                    onClick={() => {
+                      props.props.history.push(secondSection[1].link);
+                    }}
+                  >
+                    {secondSection[1].label}
+                  </a>
                 </li>
                 <li>
-                  <a href="#">Testimonios</a>
+                  <a
+                    onClick={() => {
+                      props.props.history.push(secondSection[2].link);
+                    }}
+                  >
+                    {secondSection[2].label}
+                  </a>
                 </li>
               </ul>
             </div>
@@ -44,13 +63,31 @@ export const Footer = (props) => {
               <h6>Nuestro menú</h6>
               <ul>
                 <li>
-                  <a href="#">Desayuno</a>
+                  <a
+                    onClick={() => {
+                      props.props.history.push(thirdSection[0].link);
+                    }}
+                  >
+                    {thirdSection[0].label}
+                  </a>
                 </li>
                 <li>
-                  <a href="#">Almuerzo</a>
+                  <a
+                    onClick={() => {
+                      props.props.history.push(thirdSection[1].link);
+                    }}
+                  >
+                    {thirdSection[1].label}
+                  </a>
                 </li>
                 <li>
-                  <a href="#">Cena</a>
+                  <a
+                    onClick={() => {
+                      props.props.history.push(thirdSection[2].link);
+                    }}
+                  >
+                    {thirdSection[2].label}
+                  </a>
                 </li>
               </ul>
             </div>
@@ -58,13 +95,19 @@ export const Footer = (props) => {
               <h6>Enlaces Útiles</h6>
               <ul>
                 <li>
-                  <a href="#">Soporte / ayuda</a>
+                  <a onClick={() => {
+                      props.props.history.push(fourthSection[0].link);
+                    }}>{fourthSection[0].label}</a>
                 </li>
                 <li>
-                  <a href="#">Privacy Policy</a>
+                  <a onClick={() => {
+                      props.props.history.push(fourthSection[1].link);
+                    }}>{fourthSection[1].label}</a>
                 </li>
                 <li>
-                  <a href="#">Terms & Conditions</a>
+                  <a onClick={() => {
+                      props.props.history.push(fourthSection[2].link);
+                    }}>{fourthSection[2].label}</a>
                 </li>
               </ul>
             </div>
@@ -72,18 +115,18 @@ export const Footer = (props) => {
               <div className="social-icons">
                 <ul>
                   <li>
-                    <a href="#">
+                    <a href={fifthSection[0].link} target="_blank">
                       <i className="fa fa-twitter" aria-hidden="true"></i>{" "}
                       Gorjeo
                     </a>
                   </li>
                   <li>
-                    <a href="#">
+                    <a href={fifthSection[1].link} target="_blank">
                       <i className="fa fa-facebook-square"></i> Facebook
                     </a>
                   </li>
                   <li>
-                    <a href="#">
+                    <a href={fifthSection[2].link} target="_blank">
                       <i className="fa fa-instagram"></i> Instagram
                     </a>
                   </li>
@@ -98,7 +141,7 @@ export const Footer = (props) => {
           <div className="row">
             <div className="col-sm-12">
               <p className="copyright-text">
-                Copyright © 2020 Rest Work. Todos los derechos reservados.
+                {sixthSection[0].bottomDetails}
               </p>
             </div>
           </div>

@@ -1,7 +1,7 @@
 import React from "react";
 import Reflux from "reflux";
-// import Auth from "../Auth";
-import { Navigation } from "./include/Navigation.page";
+import { productCategoryList } from "../_services/product.service";
+import Navigation from "./include/Navigation.page";
 import { AddressModal } from "./include/AddressModal.page";
 import { Footer } from "./include/Footer.page";
 import { Helmet } from "react-helmet";
@@ -13,12 +13,12 @@ class HomePage extends Reflux.Component {
     super(props);
 
     this.state = {
+      productCategoryLists: [],
       loading: true,
     };
   }
 
   componentDidMount() {
-    console.log("Hello");
     $(document).ready(function () {
       let owl = $(".owl-carousel");
       owl.owlCarousel({
@@ -48,9 +48,36 @@ class HomePage extends Reflux.Component {
         $(".location-popup").hide();
       });
     });
+
+    // USING METHOD TO GET ALL CATEGORIES
+    this.fetchAllCategoryList();
   }
 
+  // USING METHOD TO GET ALL CATEGORIES
+  fetchAllCategoryList = async () => {
+    productCategoryList().then(
+      (response) => {
+        // IF GETTING RESPONSE TRUE THEN SHOULD BE LOGIN AND REDIRCT
+        if (response.completed) {
+          this.setState({ productCategoryLists: response.categories });
+        }
+        this.setState({ loading: false });
+      },
+      (error) => this.setState({ error, loading: false })
+    );
+  };
+
   render() {
+    const { productCategoryLists } = this.state;
+    let category1 = [];
+    let category2 = [];
+    let category3 = [];
+    if (productCategoryLists.length > 0) {
+      category1 = productCategoryLists[0];
+      category2 = productCategoryLists[1];
+      category3 = productCategoryLists[2];
+    }
+    // console.log("Categories ---- ", category1)
     return (
       <div>
         <Helmet>
@@ -72,17 +99,26 @@ class HomePage extends Reflux.Component {
                         <h1 className="main-hero-title">
                           Elige entre lo más <strong>destacado</strong>
                         </h1>
-                        <a href="#" className="scrollBtn">
+                        <a className="scrollBtn">
                           <img src="assets/images/scroll-icon.png" alt="" />
                         </a>
                       </div>
                     </div>
                     <div className="col-md-4">
                       <div className="hero-portrait-img">
-                        <a href="#">
-                          <img src="assets/images/hero-cat-01.jpg" alt="" />
-                          <h3>Postres</h3>
-                        </a>
+                        {category1 != "" ? (
+                          <a
+                            onClick={() => this.props.history.push("/products")}
+                          >
+                            <img
+                              src={category1 != "" ? category1.imagePath : "assets/images/hero-cat-01.jpg"}
+                              alt={category1 != "" ? category1.name : ""}
+                            />
+                            <h3>{category1 != "" ? category1.name : ""}</h3>
+                          </a>
+                        ) : (
+                          ""
+                        )}
                       </div>
                     </div>
                     <div className="col-sm-12 home-head-content web-box">
@@ -90,10 +126,12 @@ class HomePage extends Reflux.Component {
                         Ofrecemos la mejor comida reconfortante
                         <br />a la altura de tu paladar y lo calsificamos paa ti
                       </h2>
-                      <a 
-                  onClick={() => {
-                    this.props.history.push("/products");
-                  }} className="search-cat-btn">
+                      <a
+                        onClick={() => {
+                          this.props.history.push("/products");
+                        }}
+                        className="search-cat-btn"
+                      >
                         Buscar por categoría
                       </a>
                     </div>
@@ -103,18 +141,36 @@ class HomePage extends Reflux.Component {
                   <div className="row">
                     <div className="col-md-12">
                       <div className="hero-landscape-img">
-                        <a href="#">
-                          <img src="assets/images/hero-cat-02.jpg" alt="" />
-                          <h3>Plato Fuerte</h3>
-                        </a>
+                        {category2 != "" ? (
+                          <a
+                            onClick={() => this.props.history.push("/products")}
+                          >
+                            <img
+                              src={category2 != "" ? category2.imagePath : "assets/images/hero-cat-02.jpg"}
+                              alt={category2 != "" ? category2.name : ""}
+                            />
+                            <h3>{category2 != "" ? category2.name : ""}</h3>
+                          </a>
+                        ) : (
+                          ""
+                        )}
                       </div>
                     </div>
                     <div className="col-md-8">
                       <div className="hero-portrait-img">
-                        <a href="#">
-                          <img src="assets/images/hero-cat-03.jpg" alt="" />
-                          <h3>Piqueos</h3>
-                        </a>
+                        {category3 != "" ? (
+                          <a
+                            onClick={() => this.props.history.push("/products")}
+                          >
+                            <img
+                              src={category3 != "" ? category3.imagePath : "assets/images/hero-cat-03.jpg"}
+                              alt={category3 != "" ? category3.name : ""}
+                            />
+                            <h3>{category3 != "" ? category3.name : ""}</h3>
+                          </a>
+                        ) : (
+                          ""
+                        )}
                       </div>
                     </div>
                     <div className="col-sm-12 home-head-content mobile-box">
@@ -122,9 +178,7 @@ class HomePage extends Reflux.Component {
                         Ofrecemos la mejor comida reconfortante
                         <br />a la altura de tu paladar y lo calsificamos paa ti
                       </h2>
-                      <a href="#" className="search-cat-btn">
-                        Buscar por categoría
-                      </a>
+                      <a className="search-cat-btn">Buscar por categoría</a>
                     </div>
                   </div>
                 </div>
@@ -141,7 +195,7 @@ class HomePage extends Reflux.Component {
                 <div className="owl-carousel owl-theme">
                   <div className="item">
                     <div className="request-item-box">
-                      <a href="#">
+                      <a onClick={() => this.props.history.push("/products")}>
                         <div className="request-item-img">
                           <img
                             src={
@@ -160,7 +214,7 @@ class HomePage extends Reflux.Component {
                   </div>
                   <div className="item">
                     <div className="request-item-box">
-                      <a href="#">
+                      <a onClick={() => this.props.history.push("/products")}>
                         <div className="request-item-img">
                           <img
                             src={
@@ -179,7 +233,7 @@ class HomePage extends Reflux.Component {
                   </div>
                   <div className="item">
                     <div className="request-item-box">
-                      <a href="#">
+                      <a onClick={() => this.props.history.push("/products")}>
                         <div className="request-item-img">
                           <img
                             src={
@@ -198,7 +252,7 @@ class HomePage extends Reflux.Component {
                   </div>
                   <div className="item">
                     <div className="request-item-box">
-                      <a href="#">
+                      <a onClick={() => this.props.history.push("/products")}>
                         <div className="request-item-img">
                           <img
                             src={

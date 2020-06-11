@@ -1,11 +1,11 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 
-import { Navigation } from "./include/Navigation.page";
+import Navigation from "./include/Navigation.page";
 import { Footer } from "./include/Footer.page";
 import { AddressModal } from "./include/AddressModal.page";
 
-import { ProductDetails } from "./ProductDetails.page";
+import ProductDetails from "./ProductDetails.page";
 import { ProductsFillterPage } from "./ProductsFillter.page";
 
 import { productsList, productFavourit } from "../_services/product.service";
@@ -16,15 +16,30 @@ class ProductsPage extends React.Component {
   constructor(props) {
     super(props);
 
+    this.offset = 1;
+
     this.state = {
       productsData: [],
       loading: true,
       productsDetails: [],
+      hideLoadMoreButton: true,
+      selectedCategories: [],
+      searchedProductName: "",
+      noDataFound: false,
+      selectedFilter: {
+        pageNumber: this.offset,
+        rowsPage: 20,
+        categories: "",
+        subcategories: "",
+        productName: "",
+        priceMin: 0,
+        priceMax: 0,
+        isGroup: 0,
+      },
     };
   }
 
   componentDidMount() {
-    console.log("Hello");
     $(function () {
       $("#slider-range").slider({
         range: true,
@@ -62,11 +77,30 @@ class ProductsPage extends React.Component {
   // USING METHOD TO GET ALL PRODCUTS
   fetchAllProducts = async () => {
     this.setState({ loading: true });
-    productsList().then(
+    let filteredStates = this.state.selectedFilter;
+    productsList(filteredStates).then(
       (response) => {
+        if (response.products == "") {
+          this.setState({ hideLoadMoreButton: false });
+        }
         // IF GETTING RESPONSE TRUE THEN SHOULD BE LOGIN AND REDIRCT
         if (response.completed) {
-          this.setState({ loading: false, productsData: response.products });
+          if (response.products.length < 20) {
+            this.setState({ hideLoadMoreButton: false });
+          } else {
+            this.setState({ hideLoadMoreButton: true });
+          }
+
+          if(!(this.state.productsData).length > 0 && !(response.products).length > 0){
+            this.setState({ noDataFound: true });
+          }else{
+            this.setState({ noDataFound: false })
+          }
+
+          this.setState({
+            loading: false,
+            productsData: [...this.state.productsData, ...response.products],
+          });
         } else {
           this.setState({ loading: false });
         }
@@ -94,8 +128,125 @@ class ProductsPage extends React.Component {
     this.setState({ productsDetails: productDetail });
   };
 
+  // LOAD MORE PRODUCTS
+  fetchMoreProducts = async () => {
+    this.setState({ loading: true });
+    this.state.selectedFilter.pageNumber =
+      this.state.selectedFilter.pageNumber + 1;
+    let filteredStates = this.state.selectedFilter;
+    productsList(filteredStates).then(
+      (response) => {
+        if (response.products == "") {
+          this.setState({ hideLoadMoreButton: false });
+        }
+
+        // IF GETTING RESPONSE TRUE THEN SHOULD BE LOGIN AND REDIRCT
+        if (response.completed) {
+          if (response.products.length < 20) {
+            this.setState({ hideLoadMoreButton: false });
+          } else {
+            this.setState({ hideLoadMoreButton: true });
+          }
+
+          this.setState({
+            loading: false,
+            productsData: [...this.state.productsData, ...response.products],
+          });
+        } else {
+          this.setState({ loading: false });
+        }
+      },
+      (error) => this.setState({ error, loading: false })
+    );
+  };
+
+  // LOAD FILTERED DATA IN PRODUCTS LIST
+  fetchFilteredProducts = async (filteredStates) => {
+    this.setState({
+      loading: true,
+      hideLoadMoreButton: false,
+      productsData: [],
+    });
+
+    productsList(filteredStates).then(
+      (response) => {
+        if (response.products == "") {
+          this.setState({ hideLoadMoreButton: false });
+        }
+
+        // IF GETTING RESPONSE TRUE THEN SHOULD BE LOGIN AND REDIRCT
+        if (response.completed) {
+          if (response.products.length < 20) {
+            this.setState({ hideLoadMoreButton: false });
+          } else {
+            this.setState({ hideLoadMoreButton: true });
+          }
+
+          if(!(this.state.productsData).length > 0 && !(response.products).length > 0){
+            this.setState({ noDataFound: true });
+          }else{
+            this.setState({ noDataFound: false })
+          }
+
+          this.setState({
+            loading: false,
+            productsData: [...this.state.productsData, ...response.products],
+          });
+        } else {
+          this.setState({ loading: false });
+        }
+      },
+      (error) => this.setState({ error, loading: false })
+    );
+  };
+
+  // USING METHOD TO CALL FILTER
+  handleOnChange = async (e) => {
+    const { name, value } = e.target;
+
+    if (name === "selected_categories") {
+      let existed_item = this.state.selectedCategories.find(
+        (item) => item === value
+      );
+      if (!existed_item) {
+        this.state.selectedCategories.push(value);
+      } else {
+        let new_items = this.state.selectedCategories.filter(
+          (item) => item !== value
+        );
+        this.state.selectedCategories = new_items;
+      }
+      this.state.selectedFilter.categories = this.state.selectedCategories.join(
+        ","
+      );
+    }
+    if (name === "searched_key") {
+      this.setState({ searchedProductName: value });
+      this.state.selectedFilter.productName = value;
+    }
+
+    // USING METHDO TO FILTER DATAS
+    if (name !== "searched_key") {
+      this.state.selectedFilter.pageNumber = 1;
+      this.fetchFilteredProducts(this.state.selectedFilter);
+    }
+    // console.log("SelectedFilter - ", this.state.selectedFilter);
+  };
+
+  handleSubmitToSearch = async (e) => {
+    e.preventDefault();
+    this.state.selectedFilter.pageNumber = 1;
+    this.fetchFilteredProducts(this.state.selectedFilter);
+  };
+
   render() {
-    const { productsData, productsDetails } = this.state;
+    const {
+      productsData,
+      productsDetails,
+      hideLoadMoreButton,
+      loading,
+      noDataFound,
+    } = this.state;
     return (
       <div>
         <Helmet>
@@ -113,11 +264,13 @@ class ProductsPage extends React.Component {
           <div className="container">
             <div className="products-head-section">
               <h2>¿Qué quieres pedir hoy?</h2>
-              <form action="#">
+              <form name="loginForm" onSubmit={this.handleSubmitToSearch}>
                 <input
                   type="text"
                   id="searchProducts"
                   placeholder="Buscar Productos.."
+                  name="searched_key"
+                  onChange={this.handleOnChange}
                 />
                 <button className="search-btn" type="submit">
                   Buscar
@@ -127,7 +280,10 @@ class ProductsPage extends React.Component {
             <div className="products-list-section">
               <div className="row">
                 {/* FILLTER OF PRODUCT PAGE */}
-                <ProductsFillterPage />
+                <ProductsFillterPage
+                  props={this.props}
+                  handleOnChange={this.handleOnChange}
+                />
 
                 <div className="col-sm-8">
                   <h3>Explora la variedad de nuestras ensaladas</h3>
@@ -188,9 +344,51 @@ class ProductsPage extends React.Component {
                       })}
                     </ul>
                   ) : (
-                    <ul>
-                      <li>Nothing Found!</li>
-                    </ul>
+                    <ul></ul>
+                  )}
+                  <div style={{ clear: "both" }}></div>
+                  {noDataFound ? (
+                    <div className="col-sm-12">
+                      <a
+                        style={{
+                          color: "#000",
+                          textAlign: "center",
+                          width: "100%",
+                          display: "inline-block",
+                          fontSize: "24px",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        No products found!
+                      </a>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                  <div style={{ clear: "both" }}></div>
+                  {loading ? (
+                    <div className="col-sm-12">
+                      <a
+                        class="change-location"
+                        style={{ color: "#fff", textAlign: "center" }}
+                      >
+                        Loading....
+                      </a>
+                    </div>
+                  ) : (
+                    <div className="col-sm-12">
+                      {hideLoadMoreButton ? (
+                        <a
+                          class="change-location"
+                          style={{ color: "#fff", textAlign: "center" }}
+                          onClick={() => this.fetchMoreProducts()}
+                        >
+                          Load More
+                        </a>
+                      ) : (
+                        <div></div>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
@@ -203,10 +401,14 @@ class ProductsPage extends React.Component {
         {/* <!-- Modal --> */}
         <AddressModal />
         {/* <!-- Modal --> */}
-        <ProductDetails productDetails={productsDetails} favouriteProducts = {this.favouriteProducts} />
+        <ProductDetails
+          goProps={this.props}
+          productDetails={productsDetails}
+          favouriteProducts={this.favouriteProducts}
+        />
       </div>
     );
   }
 }
 
-export { ProductsPage };
+export default ProductsPage;

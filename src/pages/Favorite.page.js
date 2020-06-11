@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigation } from "./include/Navigation.page";
+import Navigation from "./include/Navigation.page";
 import { AddressModal } from "./include/AddressModal.page";
 import { Footer } from "./include/Footer.page";
 import { Helmet } from "react-helmet";
@@ -15,7 +15,6 @@ class FavoritePage extends React.Component {
   }
 
   componentDidMount() {
-    console.log("Hello");
     $(document).ready(function () {
       let owl = $(".owl-carousel");
       owl.owlCarousel({
@@ -73,7 +72,7 @@ class FavoritePage extends React.Component {
                       Elige uno de nuestros planes, ingresa el tiempo de entrega
                       y disfruta de una deliciosa comida sin salir de tu casa!
                     </p>
-                    <a href="#" className="search-cat-btn">
+                    <a onClick={() => this.props.history.push("/products")} className="search-cat-btn">
                       Buscar por categoría
                     </a>
                     <ul className="fav-social-icon">
@@ -115,7 +114,7 @@ class FavoritePage extends React.Component {
                 <div className="owl-carousel owl-theme">
                   <div className="item">
                     <div className="favorite-item-box">
-                      <a href="#">
+                      <a onClick={() => this.props.history.push("/products")}>
                         <div className="favorite-item-img">
                           <img
                             src="assets/images/favorite-product01.jpg"
@@ -134,7 +133,7 @@ class FavoritePage extends React.Component {
                   </div>
                   <div className="item">
                     <div className="favorite-item-box">
-                      <a href="#">
+                      <a onClick={() => this.props.history.push("/products")}>
                         <div className="favorite-item-img">
                           <img
                             src="assets/images/favorite-product01.jpg"
@@ -153,7 +152,7 @@ class FavoritePage extends React.Component {
                   </div>
                   <div className="item">
                     <div className="favorite-item-box">
-                      <a href="#">
+                      <a onClick={() => this.props.history.push("/products")}>
                         <div className="favorite-item-img">
                           <img
                             src="assets/images/favorite-product01.jpg"
@@ -172,7 +171,7 @@ class FavoritePage extends React.Component {
                   </div>
                   <div className="item">
                     <div className="favorite-item-box">
-                      <a href="#">
+                      <a onClick={() => this.props.history.push("/products")}>
                         <div className="favorite-item-img">
                           <img
                             src="assets/images/favorite-product01.jpg"
@@ -191,7 +190,7 @@ class FavoritePage extends React.Component {
                   </div>
                   <div className="item">
                     <div className="favorite-item-box">
-                      <a href="#">
+                      <a onClick={() => this.props.history.push("/products")}>
                         <div className="favorite-item-img">
                           <img
                             src="assets/images/favorite-product01.jpg"

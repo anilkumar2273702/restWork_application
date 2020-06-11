@@ -1,21 +1,21 @@
 // return the user data from the session storage
 export const getUserDetails = () => {
-  const userStr = sessionStorage.getItem("user_details");
+  const userStr = localStorage.getItem("user_details");
   if (userStr) return JSON.parse(userStr);
   else return null;
 };
 
 // return the token from the session storage
 export const getToken = () => {
-  return sessionStorage.getItem("user_Id") || null;
+  return localStorage.getItem("user_Id") || null;
 };
 
 // remove the token and user from the session storage
 export const logout = () => {
   if(window.confirm("Are You sure to logout?")){
-    sessionStorage.removeItem("user_Id");
-    sessionStorage.removeItem("user_Name");
-    sessionStorage.removeItem("user_details");
+    localStorage.removeItem("user_Id");
+    localStorage.removeItem("user_Name");
+    localStorage.removeItem("user_details");
   }
 };
 
@@ -41,9 +41,9 @@ export const login = async (username, password) => {
         alert(responseData.message);
       }else{
         let userDetails = responseData.profileUser;
-        sessionStorage.setItem('user_Id', userDetails.userId);
-        sessionStorage.setItem('user_Name', userDetails.username);
-        sessionStorage.setItem('user_details', JSON.stringify(userDetails));
+        localStorage.setItem('user_Id', userDetails.userId);
+        localStorage.setItem('user_Name', userDetails.username);
+        localStorage.setItem('user_details', JSON.stringify(userDetails));
       }
       return responseData;
     })

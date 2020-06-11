@@ -1,7 +1,8 @@
 import React from "react";
-import { Navigation } from "./include/Navigation.page";
+import Navigation from "./include/Navigation.page";
 import { Footer } from "./include/Footer.page";
 import { AddressModal } from "./include/AddressModal.page";
+import { getUserDetails } from "../_services/user.service";
 import { Helmet } from "react-helmet";
 
 const $ = window.$;
@@ -15,7 +16,6 @@ class UserPersonalInfoPage extends React.Component {
   }
 
   componentDidMount() {
-    console.log("Hello");
     $(document).ready(function () {
       $(".location-map-popup").hide();
       $("#show-location-map").click(function () {
@@ -31,6 +31,7 @@ class UserPersonalInfoPage extends React.Component {
   }
 
   render() {
+    const userDetails = getUserDetails();
     return (
       <div>
         <Helmet>
@@ -56,9 +57,24 @@ class UserPersonalInfoPage extends React.Component {
                       <input
                         id="form_name"
                         type="text"
-                        name="name"
+                        name="fname"
+                        className="form-control"
+                        value={userDetails.username}
+                        placeholder="Nombre Usuario"
+                        required="required"
+                      />
+                    </div>
+                  </div>
+                  <div className="col-sm-6">
+                    <div className="form-group">
+                      <label for="form_name">First Nombres</label>
+                      <input
+                        id="form_name"
+                        type="text"
+                        name="fname"
                         className="form-control"
                         placeholder="Nombre Usuario"
+                        value={userDetails.firstName}
                         required="required"
                       />
                     </div>
@@ -71,6 +87,7 @@ class UserPersonalInfoPage extends React.Component {
                         type="text"
                         name="surname"
                         className="form-control"
+                        value={userDetails.lastName}
                         placeholder="Apellidos Usuario"
                         required="required"
                       />
@@ -84,6 +101,7 @@ class UserPersonalInfoPage extends React.Component {
                         type="email"
                         name="email"
                         className="form-control"
+                        value={userDetails.email}
                         placeholder="Usuario@correo.com"
                         required="required"
                       />
@@ -96,6 +114,7 @@ class UserPersonalInfoPage extends React.Component {
                         id="form_phone"
                         type="tel"
                         name="phone"
+                        value={userDetails.phoneNumber}
                         className="form-control"
                         placeholder="959645725"
                       />
@@ -122,6 +141,7 @@ class UserPersonalInfoPage extends React.Component {
                         type="text"
                         name="address"
                         className="form-control"
+                        value={userDetails.address}
                         placeholder="Dirección usuario"
                         required="required"
                       />
@@ -132,7 +152,7 @@ class UserPersonalInfoPage extends React.Component {
 
                 <div className="row">
                   <div className="col-md-12 text-center">
-                    <button className="yellow-full-btn width400" type="submit">
+                    <button className="yellow-full-btn width400" type="button" disabled>
                       Aceptar
                     </button>
                   </div>

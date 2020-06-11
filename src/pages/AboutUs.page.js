@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigation } from "./include/Navigation.page";
+import Navigation from "./include/Navigation.page";
 import { Footer } from "./include/Footer.page";
 import { AddressModal } from "./include/AddressModal.page";
 import { Helmet } from "react-helmet";
@@ -15,7 +15,13 @@ class AboutUsPage extends React.Component {
   }
 
   componentDidMount() {
-    console.log("Hello");
+    $(document).ready(function () {
+      $(".location-map-popup").hide();
+      $("#show-location-map").click(function () {
+        $(".location-map-popup").show();
+        $(".location-popup").hide();
+      });
+    });
   }
 
   render() {
@@ -44,7 +50,7 @@ class AboutUsPage extends React.Component {
                       Elige uno de nuestros planes, ingresa el tiempo de entrega
                       y disfruta de una deliciosa comida sin salir de tu casa!
                     </p>
-                    <a href="#" className="search-cat-btn">
+                    <a onClick={() => this.props.history.push("/products")} className="search-cat-btn">
                       Buscar por categoría
                     </a>
                     <ul className="fav-social-icon">
@@ -112,7 +118,6 @@ class AboutUsPage extends React.Component {
                   </li>
                 </ul>
                 <a
-                  // href="our-products.html"
                   onClick={() => this.props.history.push("/products")}
                   className="search-cat-btn"
                 >
